@@ -16,7 +16,7 @@ else
 fi
 
 declare -a schemes
-schemes=(dark light)
+schemes=(dark light prime-dark prime-light)
 
 declare -a profiles
 if [ "$newGnome" = "1" ]
@@ -111,24 +111,41 @@ set_profile_colors() {
   local scheme=$2
 
   case $scheme in
-    dark  )
+    dark )
       local bg_color_file=$dir/colors/base03
       local fg_color_file=$dir/colors/base0
       local bd_color_file=$dir/colors/base1
+      local palette_file=$dir/colors/palette
+    ;;
+
+    prime-dark )
+      local bg_color_file=$dir/colors/base03
+      local fg_color_file=$dir/colors/base0
+      local bd_color_file=$dir/colors/base1
+      local palette_file=$dir/colors/palette-prime
     ;;
 
     light )
       local bg_color_file=$dir/colors/base3
       local fg_color_file=$dir/colors/base00
       local bd_color_file=$dir/colors/base01
+      local palette_file=$dir/colors/palette
     ;;
+
+    prime-light )
+      local bg_color_file=$dir/colors/base3
+      local fg_color_file=$dir/colors/base00
+      local bd_color_file=$dir/colors/base01
+      local palette_file=$dir/colors/palette-prime
+    ;;
+
   esac
 
   if [ "$newGnome" = "1" ]
     then local profile_path=$dconfdir/$profile
 
     # set color palette
-    dconf write $profile_path/palette "[$(cat $dir/colors/palette-new)]"
+    dconf write $profile_path/palette "[$(cat $palette_file-new)]"
 
     # set foreground, background and highlight color
     dconf write $profile_path/bold-color "'$(cat $bd_color_file)'"
@@ -145,7 +162,7 @@ set_profile_colors() {
     local profile_path=$gconfdir/$profile
 
     # set color palette
-    gconftool-2 -s -t string $profile_path/palette $(cat $dir/colors/palette)
+    gconftool-2 -s -t string $profile_path/palette $(cat $palette_file)
 
     # set foreground, background and highlight color
     gconftool-2 -s -t string $profile_path/bold_color       $(cat $bd_color_file)
